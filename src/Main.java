@@ -10,20 +10,21 @@ import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Pattern pattern = Pattern.compile("(class\\s+)(\\w+)(<.*>)?(\\s+extends\\s+)(\\w+)");
+        Pattern pattern = Pattern.compile("(class|interface)(\\s+)(\\w+)(<.*>)?(\\s+extends\\s+)(\\w+)");
 
         Map<String,Set<String>> invertedIndexMap = new HashMap<>();
-        Files.find(Paths.get("G:\\study\\7 семестр\\параллельное\\ParallelProgramming\\лб2\\spring-framework-main"), 999, (p, bfa) -> bfa.isRegularFile()
+        Files.find(Paths.get("C:\\Users\\pavel\\Downloads\\spring-framework-main\\spring-framework-main"), 999, (p, bfa) -> bfa.isRegularFile()
                 && p.getFileName().toString().matches(".*\\.java")).forEach(x->{
                     try {
                         Files.lines(x).forEach(
                                 y->{
-                                    Matcher m = pattern.matcher(y);
-                                    if (m.find()) {
-                                        Set<String> set = invertedIndexMap.getOrDefault(m.group(5),new HashSet<>());
-                                        set.add(m.group(2));
-                                        invertedIndexMap.put(m.group(5),set);
+                                    Matcher matcher = pattern.matcher(y);
+                                    if (matcher.find()) {
+                                        Set<String> set = invertedIndexMap.getOrDefault(matcher.group(6),new HashSet<>());
+                                        set.add(matcher.group(1) + " " +matcher.group(3));
+                                        invertedIndexMap.put(matcher.group(6),set);
                                     }
+
                                 }
                         );
                     } catch (IOException e) {
@@ -32,7 +33,7 @@ public class Main {
                 }
         );
 
-        invertedIndexMap.keySet().forEach(k-> System.out.println("Class " + k + " is base for " + invertedIndexMap.get(k)));
+        invertedIndexMap.keySet().forEach(k-> System.out.println("Класс " + k + " базовый для " + invertedIndexMap.get(k)));
         System.out.println(invertedIndexMap.size());
     }
 }
