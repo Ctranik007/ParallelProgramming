@@ -28,13 +28,17 @@ public class RegexThread extends Thread {
                             Arrays.stream(matcher.group(6).split(",")).forEach(k -> {
                                 Set<String> set = invertedIndexMap.getOrDefault(k, new HashSet<>());
                                 set.add(matcher.group(1) + " " + matcher.group(3));
-                                invertedIndexMap.put(k, set);
+                                synchronized (this){
+                                    invertedIndexMap.put(k, set);
+                                }
                             });
                             if (matcher.group(10) != null) {
                                 Arrays.stream(matcher.group(10).split(",")).forEach(k -> {
                                     Set<String> set = invertedIndexMap.getOrDefault(k, new HashSet<>());
                                     set.add(matcher.group(1) + " " + matcher.group(3));
-                                    invertedIndexMap.put(k, set);
+                                    synchronized (this){
+                                        invertedIndexMap.put(k, set);
+                                    }
                                 });
                             }
                         }

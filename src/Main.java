@@ -21,8 +21,8 @@ public class Main {
             threadList.add(thread);
         });
 
-        for (Thread f : threadList) {
-            f.join();
+        for (Thread thread : threadList) {
+            thread.join();
         }
         Instant stop = Instant.now();
         invertedIndexMap.keySet().forEach(k -> System.out.println(k + " базовый для " + invertedIndexMap.get(k)));
