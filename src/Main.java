@@ -3,30 +3,28 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.*;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         Instant start = Instant.now();
 
         //очередь данных (100 размер), доступ к очереди для потоков, заблокированных при вставке или удалении, обрабатывается в порядке FIFO
         BlockingQueue<String> tasksQueue = new ArrayBlockingQueue<>(100, true);
 
         //очередь для результатов потоков
-        BlockingQueue<Map<String, Set<String>>> poolMap = new LinkedBlockingQueue<>();
+        BlockingQueue<Map<String, Set<String>>> poolResultsMap = new LinkedBlockingQueue<>(50);
 
         //запускам 6 потоков
         for (int i = 0; i < 6; i++) {
-            new Thread(new RegexProcessor(tasksQueue, poolMap)).start();
+            new Thread(new RegexProcessor(tasksQueue, poolResultsMap)).start();
         }
+        //создаем поток для объединения результатов потоков
+        FutureTask<Map<String, Set<String>>> future = new FutureTask<>(new CleanResultQueue(poolResultsMap));
+        new Thread(future).start();
 
         //раздаем задания для потоков
         Map(tasksQueue);
@@ -37,7 +35,7 @@ public class Main {
         }
 
         //собираем информацию полученную от потоков в одну Map
-        Map<String, Set<String>> invertedIndexMap  = Reducer(poolMap);
+        Map<String, Set<String>> invertedIndexMap = future.get();
         Instant stop = Instant.now();
 
         invertedIndexMap .forEach((x, y) -> System.out.println(x + " базовый для " + y));
@@ -47,21 +45,6 @@ public class Main {
         Duration duration = Duration.between(start, stop);
         System.out.println(duration.toMillis());
         System.out.printf("%d H, %d M, %d S%n", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart());
-    }
-
-    //Метод для объединения результатов потоков
-    private static Map<String, Set<String>> Reducer(BlockingQueue<Map<String, Set<String>>> maps) throws InterruptedException {
-        Map<String, Set<String>> map = new HashMap<>();
-        while (!maps.isEmpty()) {
-            map = Stream.concat(map.entrySet().stream(), maps.take().entrySet().stream())
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            Map.Entry::getValue,
-                            (e1, e2) -> Stream.concat(e1.stream(), e2.stream())
-                                    .collect(Collectors.toSet())
-                    ));
-        }
-        return map;
     }
 
     //Метод применяющий нужную функцию к каждому элементу списка tasks

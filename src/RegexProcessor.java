@@ -7,13 +7,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegexProcessor implements Runnable {
-    private final BlockingQueue<Map<String, Set<String>>> poolMap;
+    private final BlockingQueue<Map<String, Set<String>>> poolResultsMap;
     private final BlockingQueue<String> tasksQueue;
     private final String poison = "stop";
 
-    public RegexProcessor(BlockingQueue<String> tasksQueue, BlockingQueue<Map<String, Set<String>>> poolMap) {
+    public RegexProcessor(BlockingQueue<String> tasksQueue, BlockingQueue<Map<String, Set<String>>> poolResultsMap) {
         this.tasksQueue = tasksQueue;
-        this.poolMap = poolMap;
+        this.poolResultsMap = poolResultsMap;
     }
 
     @Override
@@ -44,8 +44,12 @@ public class RegexProcessor implements Runnable {
                             }
                         });
                 //добавляем HashMap текущего потока в общую очередь
-                poolMap.put(invertedIndexMap);
+                poolResultsMap.put(invertedIndexMap);
             }
+            //метка что поток нужно завершить
+            Map<String, Set<String>> poisonPill = new HashMap<>();
+            poisonPill.put("poison", new HashSet<>());
+            poolResultsMap.put(poisonPill);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
