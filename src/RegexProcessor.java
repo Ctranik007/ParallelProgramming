@@ -25,21 +25,23 @@ public class RegexProcessor implements Runnable {
                 Map<String, Set<String>> invertedIndexMap = new HashMap<>();
                 Files.lines(Path.of(file)).forEach(
                         y -> {
-                            Pattern pattern = Pattern.compile("(class|interface)(\\s+)(\\w+)(<.*>)?(\\s+extends(\\s+\\w+(,\\s+\\w+)*))((\\s+implements)(\\s+\\w+(,\\s+\\w+)*))*");
+                            Pattern pattern = Pattern.compile("(class|interface)(\\s+)(\\w+)(<.*>)?(\\s+extends(\\s+\\w+(,\\s+\\w+)*))?((\\s+implements)(\\s+\\w+(,\\s+\\w+)*))*");
                             Matcher matcher = pattern.matcher(y);
                             if (matcher.find()) {
-                                for (String s : matcher.group(6).split(",")) {
-                                    Set<String> set = invertedIndexMap.getOrDefault(s, new HashSet<>());
-                                    set.add(matcher.group(1) + " " + matcher.group(3));
-                                    invertedIndexMap.put(s, set);
-
-                                }
-                                if (matcher.group(10) != null) {
-                                    Arrays.stream(matcher.group(10).split(",")).forEach(k -> {
-                                        Set<String> set = invertedIndexMap.getOrDefault(k, new HashSet<>());
+                                if (matcher.group(6) != null) {
+                                    for (String s : matcher.group(6).split(",")) {
+                                        Set<String> set = invertedIndexMap.getOrDefault(s, new HashSet<>());
                                         set.add(matcher.group(1) + " " + matcher.group(3));
-                                        invertedIndexMap.put(k, set);
-                                    });
+                                        invertedIndexMap.put(s, set);
+                                    }
+                                }
+
+                                if (matcher.group(10) != null) {
+                                    for (String s : matcher.group(10).split(",")) {
+                                        Set<String> set = invertedIndexMap.getOrDefault(s, new HashSet<>());
+                                        set.add(matcher.group(1) + " " + matcher.group(3));
+                                        invertedIndexMap.put(s, set);
+                                    }
                                 }
                             }
                         });

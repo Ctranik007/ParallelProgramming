@@ -49,7 +49,7 @@ public class Main {
 
     //Метод применяющий нужную функцию к каждому элементу списка tasks
     private static void Map(BlockingQueue<String> tasks) throws IOException {
-        Files.find(Paths.get("G:\\учёба университет\\7 семестр\\параллельное\\spring-framework-main"), 999, (p, bfa) -> bfa.isRegularFile()
+        Files.find(Paths.get("G:\\учёба университет\\7 семестр\\параллельное\\лб7\\ParallelProgramming\\input"), 999, (p, bfa) -> bfa.isRegularFile()
                 && p.getFileName().toString().matches(".*\\.java")).forEach(x -> {
             try {
                 tasks.put(x.toString());
