@@ -25,8 +25,8 @@ public class Main {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
         job.setOutputFormatClass(TextOutputFormat.class);
-        job.setMapperClass(Mapper.class);
-        job.setReducerClass(Reducer.class);
+        job.setMapperClass(SearchBotMapper.class);
+        job.setReducerClass(SearchBotReducer.class);
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

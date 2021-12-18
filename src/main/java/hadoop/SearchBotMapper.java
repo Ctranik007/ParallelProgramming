@@ -1,11 +1,13 @@
 package hadoop;
 
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Mapper extends org.apache.hadoop.mapreduce.Mapper<Object, Text, Text, Text> {
+public class SearchBotMapper extends Mapper<Object, Text, Text, Text> {
 
     @Override
     protected void map(Object key, Text value, Context context) {
