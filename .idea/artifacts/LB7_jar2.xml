@@ -5,7 +5,7 @@
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" />
       </element>
-      <element id="module-output" name="LB7" />
+      <element id="module-output" name="LB8" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/fusesource/leveldbjni/leveldbjni-all/1.8/leveldbjni-all-1.8.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1.jar" path-in-jar="/" />

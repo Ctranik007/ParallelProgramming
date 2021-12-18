@@ -7,7 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="LB7" />
+        <module name="LB8" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11" />
