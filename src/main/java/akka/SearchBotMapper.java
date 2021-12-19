@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SearchBotMapper extends AbstractActor {
 
-    private LinkedList<String> searchRegular(String str) {
+    private LinkedList<String> map(String str) {
         Pattern pattern = Pattern.compile("(class|interface)(\\s+)(\\w+)(<.*>)?(\\s+extends(\\s+\\w+(,\\s+\\w+)*))?((\\s+implements)(\\s+\\w+(,\\s+\\w+)*))*");
         Matcher matcher = pattern.matcher(str);
         LinkedList<String> list = new LinkedList<>();
@@ -41,9 +40,8 @@ public class SearchBotMapper extends AbstractActor {
         return receiveBuilder().match(String.class, message -> {
             try {
 
-                Files.lines(Path.of(message)).map(s -> this.searchRegular(s)).flatMap(List::stream)
+                Files.lines(Path.of(message)).map(s -> map(s)).flatMap(strings -> strings.stream())
                         .forEach(x -> getSender().tell(new SearchBotMessage(x.split("-")[0], x.split("-")[1]), getSelf()));
-                String h = "ffgg";
             } catch (IOException e) {
                 e.printStackTrace();
             }

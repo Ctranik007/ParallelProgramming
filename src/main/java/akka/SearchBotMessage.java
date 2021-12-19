@@ -6,7 +6,7 @@ public class SearchBotMessage {
 
     @Override
     public String toString() {
-        return getParent() + ' ' + getChild();
+        return getParent() + " " + getChild();
     }
 
     public SearchBotMessage(String parent, String child) {
