@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="LB8" />
+        <module name="ParallelProgramming" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11" />
